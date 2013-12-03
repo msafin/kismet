@@ -60,7 +60,7 @@ public:
 protected:
 	GlobalRegistry *globalreg;
 	void CalculateChecksum();
-
+	void ParseScanConfig();
     map<string, vector<string> > config_map;
 	map<string, int> config_map_dirty;
 	uint32_t checksum;

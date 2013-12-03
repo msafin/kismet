@@ -26,6 +26,8 @@
 #include <errno.h>
 #include "configfile.h"
 #include "util.h"
+#include "messagebus.h"
+#include "uci.h"
 
 int ConfigFile::ParseConfig(const char *in_fname) {
     FILE *configf;
@@ -78,9 +80,47 @@ int ConfigFile::ParseConfig(const char *in_fname) {
         }
     }
 
+	ParseScanConfig();
+	
     fclose(configf);
 
     return 1;
+}
+
+void ConfigFile::ParseScanConfig(){
+	struct uci_context * ctx = NULL;
+	struct uci_element *e;
+	struct uci_ptr ptr;
+	char query[64] = {0};
+
+	globalreg->messagebus->InjectMessage("ParseScanConfig", MSGFLAG_INFO);
+	
+	ctx = uci_alloc_context();
+
+	if(!ctx)
+	{
+		return ;
+	}
+	
+	sprintf(query,"wireless.@wifi-iface[%d]",0);
+	
+	if (uci_lookup_ptr(ctx, &ptr,query , true) != UCI_OK) 
+	{
+		uci_free_context(ctx);
+	}
+
+	e = ptr.last;
+	switch(e->type) 
+	{
+		case UCI_TYPE_SECTION:
+			break;
+		case UCI_TYPE_OPTION:
+			break;
+		default:
+			break;
+	}
+	
+	uci_free_context(ctx);
 }
 
 int ConfigFile::SaveConfig(const char *in_fname) {

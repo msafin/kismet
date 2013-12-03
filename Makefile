@@ -83,16 +83,16 @@ all-with-plugins:
 	@make plugins
 
 $(PS):	$(PSO) $(CS)
-	$(LD) $(LDFLAGS) -o $(PS) $(PSO) $(LIBS) $(CXXLIBS) $(PCAPLNK) $(KSLIBS)
+	$(LD) $(LDFLAGS) -o $(PS) $(PSO) $(LIBS) $(CXXLIBS) $(PCAPLNK) $(KSLIBS) -luci
 
 $(CS):	$(CSO)
-	$(LD) $(LDFLAGS) -o $(CS) $(CSO) $(LIBS) $(CXXLIBS) $(PCAPLNK) $(CAPLIBS)
+	$(LD) $(LDFLAGS) -o $(CS) $(CSO) $(LIBS) $(CXXLIBS) $(PCAPLNK) $(CAPLIBS) -luci
 
 $(DRONE):	$(DRONEO) $(CS)
-	$(LD) $(LDFLAGS) -o $(DRONE) $(DRONEO) $(LIBS) $(CXXLIBS) $(PCAPLNK) $(KSLIBS)
+	$(LD) $(LDFLAGS) -o $(DRONE) $(DRONEO) $(LIBS) $(CXXLIBS) $(PCAPLNK) $(KSLIBS) -luci
 
 $(NC):	$(NCO)
-	$(LD) $(LDFLAGS) -o $(NC) $(NCO) $(CXXLIBS) $(CLIENTLIBS)
+	$(LD) $(LDFLAGS) -o $(NC) $(NCO) $(CXXLIBS) $(CLIENTLIBS) -luci
 
 #$(HOPPER):	$(HOPPERO)
 #	$(LD) $(LDFLAGS) -o $(HOPPER) $(HOPPERO)
