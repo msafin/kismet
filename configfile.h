@@ -34,6 +34,7 @@
 
 #include "globalregistry.h"
 #include "macaddr.h"
+#include "uci.h"
 
 class ConfigFile {
 public:
@@ -56,15 +57,17 @@ public:
 
 	// Fetches the load-time checksum of the config values.
 	uint32_t FetchFileChecksum();
+	void ParseScanConfig();
 
 protected:
 	GlobalRegistry *globalreg;
 	void CalculateChecksum();
-	void ParseScanConfig();
     map<string, vector<string> > config_map;
 	map<string, int> config_map_dirty;
 	uint32_t checksum;
 	string ckstring;
+private:
+	void PrintSection(struct uci_section *s);
 };
 
 // Config file with grouping.  Only used at the moment for runtime log file

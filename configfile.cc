@@ -80,11 +80,24 @@ int ConfigFile::ParseConfig(const char *in_fname) {
         }
     }
 
-	ParseScanConfig();
-	
     fclose(configf);
 
     return 1;
+}
+
+void ConfigFile::PrintSection(struct uci_section *s)
+{
+	struct uci_element *e;
+	struct uci_option *option = NULL;
+	
+	uci_foreach_element(&s->options, e) {
+		option = uci_to_option(e);
+
+		//globalreg->messagebus->InjectMessage(option->e.name, MSGFLAG_INFO);
+		//globalreg->messagebus->InjectMessage(option->v.string, MSGFLAG_INFO);
+		config_map[StrLower(option->e.name)].push_back(option->v.string);
+              config_map_dirty[StrLower(option->e.name)] = 1;
+	}
 }
 
 void ConfigFile::ParseScanConfig(){
@@ -93,7 +106,7 @@ void ConfigFile::ParseScanConfig(){
 	struct uci_ptr ptr;
 	char query[64] = {0};
 
-	globalreg->messagebus->InjectMessage("ParseScanConfig", MSGFLAG_INFO);
+	//globalreg->messagebus->InjectMessage("ParseScanConfig", MSGFLAG_INFO);
 	
 	ctx = uci_alloc_context();
 
@@ -102,7 +115,7 @@ void ConfigFile::ParseScanConfig(){
 		return ;
 	}
 	
-	sprintf(query,"wireless.@wifi-iface[%d]",0);
+	sprintf(query,"scan.@setting[%d]",0);
 	
 	if (uci_lookup_ptr(ctx, &ptr,query , true) != UCI_OK) 
 	{
@@ -113,6 +126,7 @@ void ConfigFile::ParseScanConfig(){
 	switch(e->type) 
 	{
 		case UCI_TYPE_SECTION:
+			PrintSection(ptr.s);
 			break;
 		case UCI_TYPE_OPTION:
 			break;
